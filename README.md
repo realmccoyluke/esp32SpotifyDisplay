@@ -1,3 +1,5 @@
+## The Base code from which this project was spawn from https://github.com/alejandrosnz/ESP-Spotify-OLED
+
 ## Installation
 
 Install library dependencies:
