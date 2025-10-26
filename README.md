@@ -24,3 +24,4 @@ Replace Variables
 Go to https://developer.spotify.com/dashboard, create an account if you do not have one.
 
 Create an app and copy your client ID as well as your Client Secret into https://spotify-refresh-token-generator.netlify.app/#welcome, If you do not trust this app you can verify the source code on the github repository linked below
+- Select the scopes of: user-read-currently-playing, user-read-private, user-read-email (You should be able to get away with only user-read-currently-playing, but if not trying selecting the two other scopes)
