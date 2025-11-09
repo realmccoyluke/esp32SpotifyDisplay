@@ -18,9 +18,9 @@
 #include <FS.h>
 
 #include <SPIFFS.h>
-char ssid[] = "YOURSSID";         // your network SSID (name)
-char password[] = "YOURPASSWORD"; // your network password
-char clientId[] = "YOURCLIENTID";     // Your client ID of your spotify api app
+char ssid[] = "YOURSSID";                 // your network SSID (name)
+char password[] = "YOURPASSWORD";         // your network password
+char clientId[] = "YOURCLIENTID";         // Your client ID of your spotify api app
 char clientSecret[] = "YOURCLIENTSECRET"; // Your client Secret of your spotify api app (Do Not share this!)
 
 #define SPOTIFY_MARKET "US"
@@ -30,7 +30,7 @@ WiFiClientSecure client;
 SpotifyArduino spotify(client, clientId, clientSecret, SPOTIFY_REFRESH_TOKEN);
 
 unsigned long delayBetweenRequests = 5000; // Time between requests (1 minute)
-unsigned long requestDueTime;               //time when request due
+unsigned long requestDueTime;              // time when request due
 
 TFT_eSPI tft = TFT_eSPI(); // Create an instance of the TFT_eSPI class
 TFT_eSprite img = TFT_eSprite(&tft);
@@ -41,9 +41,10 @@ String lastTrackName = "";
 bool tft_output(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t *bitmap)
 {
 
-  if (y >= img.height()) return 0;
-  img.pushImage(x, y, w, h, bitmap);
-  return 1; // Continue decoding
+    if (y >= img.height())
+        return 0;
+    img.pushImage(x, y, w, h, bitmap);
+    return 1; // Continue decoding
 }
 
 void setup()
@@ -52,9 +53,11 @@ void setup()
     Serial.begin(115200);
 
     // Initialize SPIFFS
-    if (!SPIFFS.begin()) {
+    if (!SPIFFS.begin())
+    {
         Serial.println("SPIFFS initialization failed!");
-        while (1) yield();
+        while (1)
+            yield();
     }
     Serial.println("SPIFFS ready.");
 
@@ -63,15 +66,12 @@ void setup()
     tft.fillScreen(TFT_BLACK); // Fill Screen with background color
     tft.setTextSize(2);
 
-
-
     // Setup TJpg decoder
-    TJpgDec.setJpgScale(2);      // No scaling (decode full resolution)
-    TJpgDec.setSwapBytes(true);  // Required for TFT_eSPI
+    TJpgDec.setJpgScale(2);     // No scaling (decode full resolution)
+    TJpgDec.setSwapBytes(true); // Required for TFT_eSPI
     TJpgDec.setCallback(tft_output);
-    
 
-    WiFi.mode(WIFI_STA);    // Connect To Wifi
+    WiFi.mode(WIFI_STA); // Connect To Wifi
     WiFi.begin(ssid, password);
     Serial.println("");
 
@@ -84,22 +84,27 @@ void setup()
     Serial.println("\nWiFi connected!");
 
     // Handle HTTPS Verification
-    client.setCACert(spotify_server_cert); //Sometimes this doesn't work, if it doesn't try uncommenting the line below.
-    //client.setInsecure(); // Accept any certificate (simplest, not secure)
+    client.setCACert(spotify_server_cert); // Sometimes this doesn't work, if it doesn't try uncommenting the line below.
+    // client.setInsecure(); // Accept any certificate (simplest, not secure)
+    client.setTimeout(10000); // Allow up to 10s for full JSON response, This is not strictly neccesssary but fixes "Error -1", I found that this error is fairly common, so enabled by default
 
-     // Center pivot point for later rotations (optional)
+    // Center pivot point for later rotations (optional)
     tft.setPivot(tft.width() / 2, tft.height() / 2);
 
     // Create a 200x200 sprite
-    if (img.createSprite(150, 150)) {
+    if (img.createSprite(150, 150))
+    {
         img.fillSprite(TFT_BLACK);
-    } else {
+    }
+    else
+    {
         tft.fillScreen(TFT_RED);
         tft.drawString("Failed to create sprite!", 10, 10);
     }
 
     // For testing: remove old file
-    if (SPIFFS.exists("/album.jpg")) {
+    if (SPIFFS.exists("/album.jpg"))
+    {
         Serial.println("Removing old /M81.jpg file");
         SPIFFS.remove("/album.jpg");
     }
@@ -113,13 +118,15 @@ void setup()
 
 void printCurrentlyPlayingToSerial(CurrentlyPlaying currentlyPlaying)
 {
-        // Check if it's a new track
-    if (String(currentlyPlaying.trackName) == lastTrackName) {
+    // Check if it's a new track
+    if (String(currentlyPlaying.trackName) == lastTrackName)
+    {
         Serial.println("Same track as before — skipping update.");
         return; // Exit early, no need to redraw or reprint
     }
 
-    if (SPIFFS.exists("/album.jpg")) {
+    if (SPIFFS.exists("/album.jpg"))
+    {
         Serial.println("Removing old album art");
         SPIFFS.remove("/album.jpg");
     }
@@ -149,8 +156,6 @@ void printCurrentlyPlayingToSerial(CurrentlyPlaying currentlyPlaying)
     // Draw a string at position (100, 100) on the screen
     tft.drawString(currentlyPlaying.trackName, 20, 180);
 
-    
-
     String combinedArtists = "";
 
     Serial.println("Artists: ");
@@ -159,9 +164,10 @@ void printCurrentlyPlayingToSerial(CurrentlyPlaying currentlyPlaying)
         Serial.print("Name: ");
         Serial.println(currentlyPlaying.artists[i].artistName);
         Serial.println();
-        combinedArtists += currentlyPlaying.artists[i].artistName;  // Add artist name
-        if (i < currentlyPlaying.numArtists - 1) {
-            combinedArtists += ", ";                  // Add comma except after last artist
+        combinedArtists += currentlyPlaying.artists[i].artistName; // Add artist name
+        if (i < currentlyPlaying.numArtists - 1)
+        {
+            combinedArtists += ", "; // Add comma except after last artist
         }
     }
 
@@ -189,9 +195,7 @@ void printCurrentlyPlayingToSerial(CurrentlyPlaying currentlyPlaying)
     Serial.println();
     Serial.println("------------------------");
 
-    tft.fillRect(300,0,20,240, TFT_BLACK);
-
-    
+    tft.fillRect(300, 0, 20, 240, TFT_BLACK);
 
     uint32_t t = millis();
 
@@ -201,9 +205,12 @@ void printCurrentlyPlayingToSerial(CurrentlyPlaying currentlyPlaying)
     listSPIFFS();
 
     t = millis() - t;
-    if (loaded_ok) {
+    if (loaded_ok)
+    {
         Serial.printf("Download took %u ms\n", t);
-    } else {
+    }
+    else
+    {
         Serial.println("Download failed!");
         delay(5000);
         return;
@@ -218,7 +225,6 @@ void printCurrentlyPlayingToSerial(CurrentlyPlaying currentlyPlaying)
     Serial.println("Image rendered at 200x200");
 
     listSPIFFS();
-
 }
 
 void loop()
