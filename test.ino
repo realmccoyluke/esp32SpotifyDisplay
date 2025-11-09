@@ -87,6 +87,7 @@ void setup()
     client.setCACert(spotify_server_cert); // Sometimes this doesn't work, if it doesn't try uncommenting the line below.
     // client.setInsecure(); // Accept any certificate (simplest, not secure)
     client.setTimeout(10000); // Allow up to 10s for full JSON response, This is not strictly neccesssary but fixes "Error -1", I found that this error is fairly common, so enabled by default
+    //If Error -1 eprsists, try a different partition scheme, Arduino IDE's Huge App(3Mb App/ 1Mb SPIFFS) works well.
 
     // Center pivot point for later rotations (optional)
     tft.setPivot(tft.width() / 2, tft.height() / 2);
