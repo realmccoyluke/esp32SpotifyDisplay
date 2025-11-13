@@ -87,7 +87,7 @@ void setup()
     client.setCACert(spotify_server_cert); // Sometimes this doesn't work, if it doesn't try uncommenting the line below.
     // client.setInsecure(); // Accept any certificate (simplest, not secure)
     client.setTimeout(10000); // Allow up to 10s for full JSON response, This is not strictly neccesssary but fixes "Error -1", I found that this error is fairly common, so enabled by default
-    //If Error -1 eprsists, try a different partition scheme, Arduino IDE's Huge App(3Mb App/ 1Mb SPIFFS) works well.
+    //If Error -1 persists, try a different partition scheme, Arduino IDE's Huge App(3Mb App/ 1Mb SPIFFS) works well.
 
     // Center pivot point for later rotations (optional)
     tft.setPivot(tft.width() / 2, tft.height() / 2);
@@ -241,6 +241,7 @@ void loop()
         }
         else if (status == 204)
         {
+            lastTrackName = ""; // Reset track name so that the screen updates even if the now paused track is resumed
             Serial.println("Doesn't seem to be anything playing");
             tft.fillScreen(TFT_BLACK);
             tft.drawString("No Track Playing", 20, 115);
