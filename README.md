@@ -1,5 +1,8 @@
 ## The Base code from which this project was spawn from https://github.com/alejandrosnz/ESP-Spotify-OLED
 
+## A more deskthing and complex version of this project can be found here
+- https://github.com/realmccoyluke/esp32DeskDisplay
+
 ## Installation
 
 Install library dependencies:
